@@ -1,58 +1,19 @@
+import sys
+import pygame
 from random import choice
+from pygame.locals import *
 
-def main():
-    vals = [[9, 1, 0, 4, 0, 0, 0, 0, 0],
-            [0, 7, 4, 0, 0, 0, 8, 9, 0],
-            [0, 0, 0, 0, 6, 0, 0, 0, 1],
-            [0, 0, 0, 8, 2, 0, 3, 0, 9],
-            [0, 0, 7, 9, 0, 0, 0, 0, 0],
-            [2, 0, 0, 0, 4, 0, 6, 1, 0],
-            [0, 0, 8, 6, 0, 3, 0, 0, 0],
-            [3, 9, 0, 2, 0, 4, 5, 6, 8],
-            [7, 2, 6, 5, 0, 1, 9, 0, 4]]
+pygame.init()
 
-    cells = []
-    entropy = 0
-    for row in range(9):
-        for col in range(9):
-            c = cell(row, col, 3*(row//3) + (col//3), vals[row][col])
-            cells.append(c)
-            entropy += c.entropy
+WHITE = (255, 255, 255)
+BLACK = (  0,   0,   0)
 
-    print(entropy)
+SIZE = 600
 
-    # while not solved
-    while(entropy > len(cells)):
-        for c in cells:
-            if c.entropy == 1:
-                for s in cells:
-                    if len(s.superposition) > 1 and (s.row == c.row or s.col == c.col or s.metacell == c.metacell):
-                        s.reduce(c.superposition[0])
-        
-        cell_min_entropy = None
-        for c in cells:
-            if cell_min_entropy is None and c.entropy > 1:
-                cell_min_entropy = c
-            elif 1 < c.entropy < cell_min_entropy.entropy:
-                cell_min_entropy = c
-        
-        if cell_min_entropy is not None:
-            cell_min_entropy.collapse()
-        entropy = sum([c.entropy for c in cells])
-        print(entropy)
+fpsclock = pygame.time.Clock()
+FPS = 10
 
-    for row in range(9):
-        for col in range(9):
-            if len(cells[9*row + col].superposition) == 1:
-                vals[row][col] = cells[9*row + col].superposition[0]
-    
-    for i in range(9):
-        print('-'*37)
-        for j in range(9):
-            print(f'| {" " if vals[i][j] == 0 else vals[i][j]} ', end='')
-        print('|')
-    print('-'*37)
-
+font = pygame.font.SysFont('arial', 20)
 
 class cell:
     def __init__(self, row, col, metacell, val=0):
@@ -77,6 +38,74 @@ class cell:
         self.superposition.append(val)
         self.entropy = len(self.superposition)
 
+
+def main():
+    vals = [[9, 1, 0, 4, 0, 0, 0, 0, 0],
+            [0, 7, 4, 0, 0, 0, 8, 9, 0],
+            [0, 0, 0, 0, 6, 0, 0, 0, 1],
+            [0, 0, 0, 8, 2, 0, 3, 0, 9],
+            [0, 0, 7, 9, 0, 0, 0, 0, 0],
+            [2, 0, 0, 0, 4, 0, 6, 1, 0],
+            [0, 0, 8, 6, 0, 3, 0, 0, 0],
+            [3, 9, 0, 2, 0, 4, 5, 6, 8],
+            [7, 2, 6, 5, 0, 1, 9, 0, 4]]
+
+    cells = []
+    entropy = 0
+    del_entropy = 0
+    for row in range(9):
+        for col in range(9):
+            c = cell(row, col, 3*(row//3) + (col//3), vals[row][col])
+            cells.append(c)
+            entropy += c.entropy
+
+    disp = pygame.display.set_mode((SIZE, SIZE))
+    ico = pygame.image.load('SudokuSolver/icon.jpg')
+    pygame.display.set_caption('Sudoku')
+    pygame.display.set_icon(ico)
+    
+
+    while True:
+        disp.fill(BLACK)
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == KEYDOWN:
+                print(entropy)
+                for c in cells:
+                    if c.entropy == 1:
+                        for s in cells:
+                            if len(s.superposition) > 1 and (s.row == c.row or s.col == c.col or s.metacell == c.metacell):
+                                s.reduce(c.superposition[0])
+                del_entropy = entropy - sum([c.entropy for c in cells])
+                if del_entropy == 0:
+                    min_entropy = 10
+                    min_cell = None
+                    for c in cells:
+                        if 1 < c.entropy < min_entropy:
+                            min_cell = c
+                    if min_cell is not None:
+                        min_cell.collapse()
+                entropy = sum([c.entropy for c in cells])
+
+        for i in range(8):
+            pygame.draw.line(disp, WHITE, (0, (i+1)*SIZE // 9), (SIZE, (i+1)*SIZE // 9))
+            pygame.draw.line(disp, WHITE, ((i+1)*SIZE // 9, 0), ((i+1)*SIZE // 9, SIZE))
+        for i in range(81):
+            x1 = int((SIZE / 9) * (i % 9))
+            y1 = int((SIZE / 9) * (i // 9))
+            for a in range(3):
+                for b in range(3):
+                    num = 3*a+(b+1)
+                    if num in cells[i].superposition:
+                        f_surf = font.render(f'{num}', True, WHITE)
+                        f_rect = f_surf.get_rect()
+                        f_rect.topleft = (x1 + b*15 + 5, y1 + a*20 + 5)
+                        disp.blit(f_surf, f_rect)
+        
+        pygame.display.update()
+        fpsclock.tick(FPS)
 
 if __name__ == '__main__':
     main()
