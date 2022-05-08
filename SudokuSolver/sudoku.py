@@ -40,22 +40,28 @@ class cell:
 
 
 def main():
-    vals = [[9, 1, 0, 4, 0, 0, 0, 0, 0],
-            [0, 7, 4, 0, 0, 0, 8, 9, 0],
-            [0, 0, 0, 0, 6, 0, 0, 0, 1],
-            [0, 0, 0, 8, 2, 0, 3, 0, 9],
-            [0, 0, 7, 9, 0, 0, 0, 0, 0],
-            [2, 0, 0, 0, 4, 0, 6, 1, 0],
-            [0, 0, 8, 6, 0, 3, 0, 0, 0],
-            [3, 9, 0, 2, 0, 4, 5, 6, 8],
-            [7, 2, 6, 5, 0, 1, 9, 0, 4]]
-
     cells = []
     entropy = 0
     del_entropy = 0
+    vals = []
+    for i in range(81):
+        n = input('Number or blank: ')
+        if len(n) > 0:
+            n = eval(n)
+        else:
+            n = 0
+        while n not in range(10):
+            print('bad input')
+            n = input('Number or blank: ')
+            if len(n) > 0:
+                n = eval(n)
+            else:
+                n = 0
+        vals.append(n)
+
     for row in range(9):
         for col in range(9):
-            c = cell(row, col, 3*(row//3) + (col//3), vals[row][col])
+            c = cell(row, col, 3*(row//3) + (col//3), vals[9*row+col])
             cells.append(c)
             entropy += c.entropy
 
