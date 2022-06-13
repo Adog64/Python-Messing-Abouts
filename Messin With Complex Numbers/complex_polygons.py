@@ -7,7 +7,6 @@ Using the Euler identity to draw n-gons in pygame
 
 from math import e, pi
 import sys
-import py
 import pygame
 from pygame.locals import *
 
