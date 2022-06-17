@@ -1,6 +1,6 @@
 from PIL import Image
 from random import shuffle
-from words import WORDSs
+from words import WORDS
 from copy import deepcopy
 
 # create a 1:1 mapping of RGB values
@@ -85,9 +85,9 @@ def decrypt(image):
 def main():
     im = Image.open("a.jpg")
     encrypt(im)
-    im.save('b.png')
+    im.save('b.jpg')
     decrypt(im)
-    im.save('c.png')
+    im.save('c.jpg')
 
 if __name__ == '__main__':
     main()

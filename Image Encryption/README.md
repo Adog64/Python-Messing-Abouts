@@ -17,5 +17,5 @@ Decryption does the same thing backwards, using the words in words.txt as a key 
 
 Example files:
 Input: a.jpg
-Encrypted output: b.png
-Decrypted output: c.png
+Encrypted output: b.jpg
+Decrypted output: c.jpg

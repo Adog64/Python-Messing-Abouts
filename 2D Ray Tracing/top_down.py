@@ -1,12 +1,7 @@
-from cmath import sqrt
-from numpy import intersect1d
 import pygame as pg
 from pygame.locals import *
 import sys
 from math import sin, cos, radians
-
-from sympy import intersection
-
 
 pg.init()
 WIDTH = 800
