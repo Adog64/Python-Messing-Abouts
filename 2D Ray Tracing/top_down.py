@@ -25,8 +25,10 @@ def main():
     while True:
         #cast rays
         origin = (pg.mouse.get_pos())
-        for Θ in range(360):
-            intersection = (origin[0] + MAX_DIST*cos(radians(Θ)), origin[1] + MAX_DIST*sin(radians(Θ)))
+        for theta in range(360):
+            intersection = (origin[0] + MAX_DIST*cos(radians(theta)), origin[1] + MAX_DIST*sin(radians(theta)))
+            
+            # find the intersection between the origin of the ray and the closest object in the rays path
             for obj in scene:
                 intersection1 = obj.intersects(origin, intersection)
                 l = ((origin[0] - intersection[0])**2 + (origin[1] - intersection[1])**2)**(1/2)
@@ -55,24 +57,34 @@ class Circle:
         self.center = center
         self.radius = radius
 
+    # defines a quadratic whose solutions are the intersections between a ray and the circle
+    # then solves for the closest solution to the origin of the ray
     def intersects(self, ray_start, ray_end):
         intersection = ray_end
         x0, y0 = self.center
         x1, y1 = ray_start
         x2, y2 = ray_end
-        a = (x2 - x1)**2 + (y2 - y1)**2
-        b = 2*(x2 - x1)*(x1 - x0) + 2*(y2 - y1)*(y1 - y0)
-        c = (x1 - x0)**2 + (y1 - y0)**2 - self.radius**2
-        t = None
+
+        # define a quadratic based on the points listed above in the form: ax^2 + bx + c
+        a = (x2 - x1)**2 + (y2 - y1)**2                     # a term of quadratic
+        b = 2*(x2 - x1)*(x1 - x0) + 2*(y2 - y1)*(y1 - y0)   # b term of quadratic
+        c = (x1 - x0)**2 + (y1 - y0)**2 - self.radius**2    # c term of quadratic
+
+        t = None                                            # used to find intersection of least distance
+
+        # b^2 - 4ac is the discriminant (non-negative if solutions exist)
+        # if a is 0, then the function is of the form: bx + c, which is not quadratic
         if (b**2 - 4*a*c) >= 0 and a != 0:
-            t1 = (-b + (b**2 - 4*a*c)**(1/2)) / (2*a)
-            t2 = (-b - (b**2 - 4*a*c)**(1/2)) / (2*a)
-            if (0 <= t1 <= 1) and (0 <= t2 <= 1):
-                t = min(t1, t2)
-            elif 0 <= t1 <= 1:
+            t1 = (-b + (b**2 - 4*a*c)**(1/2)) / (2*a)       # first solution
+            t2 = (-b - (b**2 - 4*a*c)**(1/2)) / (2*a)       # second solution
+            if (0 <= t1 <= 1) and (0 <= t2 <= 1):           # check that t1 and t2 are valid solutions
+                t = min(t1, t2)                             
+            elif 0 <= t1 <= 1:                              # only t1 is valid
                 t = t1
-            elif 0 <= t2 <= 1:
+            elif 0 <= t2 <= 1:                              # only t2 is valid
                 t = t2
+
+        # use the closest valid solution in a parametric equation for the intersection point
         if t != None:
             intersection = ((x2 - x1)*t + x1, (y2 - y1)*t + y1)
 
@@ -88,11 +100,15 @@ class Square:
         intersection = ray_end
         x1, y1 = ray_start
         x2, y2 = ray_end
+
+        # define sides of square as infinite horizontal and vertical lines
         left, top = self.pos
         right = left + self.size[0]
         bottom = top + self.size[1]
 
-        t1, t2 = 2,2
+        t1, t2 = 2,2  # 2 is beyond the scope of valid solutions ( 0 <= t <= 1 )
+
+        # finds where the ray crosses the heights of the top and bottom of square
         if y2 != y1:
             t1 = ((top - y1) / (y2 - y1))
             t2 = ((bottom - y1) / (y2 - y1))
@@ -101,6 +117,7 @@ class Square:
         if t2 < 0 or t2 > 1 or not (left <= (x2 - x1)*t2 + x1 <= right):
             t2 = 2
 
+        # finds where the ray crosses the posisions of the left and right sides of the square 
         t3, t4 = 2,2
         if x2 != x1: 
             t3 = ((left - x1) / (x2 - x1))
@@ -110,6 +127,7 @@ class Square:
         if t4 < 0 or t4 > 1 or not (top <= (y2 - y1)*t4 + y1 <= bottom):
             t4 = 2
 
+        # finds the closest solution to the ray origin, if any are valid
         t = min(t1, t2, t3, t4)
         if 0 <= t <= 1:
             x = (x2 - x1)*t + x1
