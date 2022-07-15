@@ -1,5 +1,5 @@
 ''' 
-Using the Euler identity to draw n-gons in pygame
+Using Euler's identity to draw animated n-gons in pygame
 
 30 April, 2022 - Aidan Sharpe
 '''
@@ -7,7 +7,6 @@ Using the Euler identity to draw n-gons in pygame
 
 from math import e, pi
 import sys
-import py
 import pygame
 from pygame.locals import *
 
@@ -15,7 +14,7 @@ pygame.init()
 disp = pygame.display.set_mode((500, 500))
 
 # polygon constants
-VERTICIES = 6
+VERTICIES = 5
 RADIUS = 100
 EDGE_THICKNESS = 2
 
