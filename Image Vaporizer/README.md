@@ -1,0 +1,1 @@
+Convert images to a 16-color palette with floyd-steinberg-like dithering (not sure if it's the official algorithm but it seems to work in a similar way)
