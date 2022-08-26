@@ -6,10 +6,18 @@ COLORS = ((0,0,0), (64, 64, 64), (150, 150, 150), (255,255,255),
           (0,128,128), (0, 255, 255), (255, 0, 0), (255, 128, 128),
           (128,0,128), (255,64,255), (128,64,0), (255, 255, 0))
 
-
 def main():
+    data = ""
+    for c in range(len(COLORS)):
+        data += chr(65+c)+"=rgb("+str(COLORS[c][0])+","+str(COLORS[c][1])+","+str(COLORS[c][2])+")\n"
+
+    point_lists = {}
+    for c in COLORS:
+        point_lists[c] = []
+
     # get image from source
-    im = Image.open('vaporwave1.jpg')
+    im = Image.open('im.jpg')
+    im = im.resize((100,100))
     # convert RGB to 16 color palette
     for x in range(im.width):
         for y in range(im.height):
@@ -23,7 +31,9 @@ def main():
             r_new, g_new, b_new = COLORS[dists.index(min(dists))]
 
             # convert pixel to limited palette
-            im.putpixel((x,y), (r_new, g_new, b_new))
+            c = (r_new, g_new, b_new)
+            im.putpixel((x,y), c)
+            point_lists[c].append((x,-y))
 
             # calculate per-channel error
             r_error = r - r_new
@@ -43,6 +53,14 @@ def main():
             if x + 1 < im.width and y + 1 < im.height:
                 t = im.getpixel((x+1, y+1))
                 im.putpixel((x+1, y+1), ((t[0] + 1*r_error//16), (t[1] + 1*g_error//16), (t[2] + 1*b_error//16)))
+    
+    for l in point_lists:
+        data += str(point_lists[l])+'\n'
+
+    # push data to file
+    with open("desmos.txt", 'w') as script:
+        script.write(data)
+
     im.show()
 
 
