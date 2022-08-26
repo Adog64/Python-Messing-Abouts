@@ -6,7 +6,6 @@
 - Currently it supports 2 types of objects, spheres and planes.
 - Spheres are the most simple object to model (at least in this case)
 - Planes can point in all sorts of directions, support 1 color, 2 color, and image texturing
-- Planes can also be animated by rotating about a point
 
 
 ### How does this thing even work?
@@ -17,3 +16,5 @@
 - If an object intersects, it returns the distance from intersection to the camera and the color of the object at that point
 - The color of the closest object is kept and then shaded based on its distance from the camera
 - Following the inverse square law, closer objects are brighter and further ones are darker
+
+<p align="center"><img src="https://github.com/Adog64/Python-Messing-Abouts/tree/master/3D%20Ray%20Tracing/StaticRenderFirstLook.jpg"/></p>

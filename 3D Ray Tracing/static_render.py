@@ -30,7 +30,7 @@ def main():
         Sphere([int(9.5*SIZE/8), 0, 0], int(3*SIZE/8), [0,255,0]),
         Sphere([int(8.5*SIZE/8), int(3*SIZE/8), 0], int(SIZE/4), [0,0,255]),
         Plane([0,1,0], [0,int(-4*SIZE/8),0], 0, texture=pg.image.load('wall.jpg')),
-        Plane([0,1,0], [0,int(4*SIZE/8),0], 0, texture=pg.image.load('wall.jpg')),
+        #Plane([0,1,0], [0,int(4*SIZE/8),0], 0, texture=pg.image.load('wall.jpg')),
         Plane([0,0,1], [0,0,int(-3*SIZE/8)], pi/4, texture=pg.image.load('floor.jpg')),
         Plane([1,0,0], [int(6*SIZE/4), 0,0], pi/4,[0,0,0], texture=pg.image.load('wall.jpg')),
         Plane([0,0,1], [0, 0,int(5*SIZE/8)], pi/4,[0,0,0], texture=pg.image.load('ceiling.jpg')),
@@ -141,8 +141,8 @@ class Plane:
                 c = self.texture.get_at((int(dotp3(f,dir1)) % (self.texture.get_width() - 1), int(dotp3(f,dir2) % (self.texture.get_height() - 1))))
             return (d, c)
     
-    def animate(self):
-        self.rotation += pi/8
+    def rotate(self, angle):
+        self.rotation += angle
 
 class Circle:
     def __init__(self, normal, center, radius, color):
