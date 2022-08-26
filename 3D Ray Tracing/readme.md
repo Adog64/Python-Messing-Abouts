@@ -17,4 +17,4 @@
 - The color of the closest object is kept and then shaded based on its distance from the camera
 - Following the inverse square law, closer objects are brighter and further ones are darker
 
-<p align="center"><img src="https://github.com/Adog64/Python-Messing-Abouts/tree/master/3D%20Ray%20Tracing/StaticRenderFirstLook.jpg"/></p>
+<p align="center"><img src="https://github.com/Adog64/Python-Messing-Abouts/blob/master/3D%20Ray%20Tracing/StaticRenderFirstLook.png"/></p>
